@@ -1,2 +1,0 @@
-from gafconvert.loader.vcgaf_loader import vcgaf_loader
-from gafconvert.loader.refbed_loader import refbed_loader
