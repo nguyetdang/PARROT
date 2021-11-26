@@ -22,26 +22,24 @@ def vcgaf2bed(refbed, vcgaf, sampleID):
     refcounter = {}
     for key in newrefbed.SegID:
         refcounter[key] = 1
-
+    print("Finish prepared reference file")
     # prepare counter dictionary for each sample gaf file and put the results in a list
     gafcount = []
+    i = 0
     for singlegaf in vcgaf:
+        print("Start processing individual " + str(i) + " - " + str(sampleID[i]))
         singlegaf = pd.DataFrame(singlegaf)
-        gafcount.append(total_mappath_counter(singlegaf.apply(lambda row: mappath_counter(row.MapPath), axis=1)))
-
-    # prepare full counter with all the SegID
-    gafcountfull = []
-    for eachcount in gafcount:
-        newelement = total_mappath_counter([refcounter, eachcount])
-        for key, value in newelement.items():
-            newelement[key] = value - 1
-        gafcountfull.append(newelement)
-
-    # prepare output bed file with sampleID
+        singlegafcount = total_mappath_counter(singlegaf.apply(lambda row: mappath_counter(row.MapPath), axis=1))
+        print("Finish individual counting process" + str(i))
+        singlegafcountfull = total_mappath_counter([refcounter, singlegafcount])
+        for key, value in singlegafcountfull.items():
+            singlegafcountfull[key] = value - 1
+        gafcount.append(singlegafcountfull)
+        i = i + 1
+    # prepare dictionary for output
     outputdict = newrefbed.copy()
-    samplecount = dict(zip(sampleID, gafcountfull))
+    samplecount = dict(zip(sampleID, gafcount))
     for key, value in samplecount.items():
         new_d = pd.Series(value)
         outputdict[key] = outputdict['SegID'].map(new_d)
-
     return outputdict
