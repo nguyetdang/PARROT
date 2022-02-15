@@ -1,2 +1,2 @@
-# gafconvert
- A tool to convert gaf output from minigraph to different format
+# PARROT
+ PAngenome gRaph Related Output Transmutator (PARROT)
